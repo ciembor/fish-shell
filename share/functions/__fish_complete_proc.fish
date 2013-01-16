@@ -20,7 +20,7 @@ function __fish_complete_proc --description 'Complete by list of running process
 		set sed_cmds $sed_cmds 's|.*$/||g'
 		
 		# Retain the last path component only
-		set sed_cmds $sed_cmds 's|.*$/||g'
+		set sed_cmds $sed_cmds 's|.*/||g'
 		
 		# Strip off square brackets. Cute, huh?
 		set sed_cmds $sed_cmds 's/[][]//g' 
