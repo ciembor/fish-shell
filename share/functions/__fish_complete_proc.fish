@@ -1,8 +1,5 @@
 function __fish_complete_proc --description 'Complete by list of running processes'
-	# 'tail -n +2' deletes the first line, which contains the headers
-	# sed removes the trailing whitespace and a leading dash (which means login shell)
-	# ucomm truncates names on Linux
-
+	# Our function runs ps, followed by a massive list of commands passed to sed
 	set -l ps_cmd
 	set -l sed_cmds
 	if test (uname) = Linux
@@ -16,15 +13,23 @@ function __fish_complete_proc --description 'Complete by list of running process
 		# parse out brackets too.
 		set ps_cmd 'ps -A -o command'
 		
-		# This first sed command erases everything after the first space
-		# The second one strips off square brackets. Cute, huh?
-		set sed_cmds 's/. *//' 's/[][]//g'
+		# Erase everything after the first space
+		set sed_cmds $sed_cmds 's/ .*//'
+		
+		# Erases weird stuff Linux gives like kworker/0:0
+		set sed_cmds $sed_cmds 's|.*$/||g'
+		
+		# Retain the last path component only
+		set sed_cmds $sed_cmds 's|.*$/||g'
+		
+		# Strip off square brackets. Cute, huh?
+		set sed_cmds $sed_cmds 's/[][]//g' 
 	else
 		# OS X, BSD. Preserve leading spaces.
 		set ps_cmd 'ps axc -o comm'
 		
 		# Delete parenthesized (zombie) processes
-		set sed_cmds '/(.*)/d'	
+		set sed_cmds $sed_cmds '/(.*)/d'	
 	end
 	
 	# Append sed command to delete first line (the header)
