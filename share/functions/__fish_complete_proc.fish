@@ -18,13 +18,13 @@ function __fish_complete_proc --description 'Complete by list of running process
 		
 		# This first sed command erases everything after the first space
 		# The second one strips off square brackets. Cute, huh?
-		set sed_cmds 's/. *//' 's/[][]/'
+		set sed_cmds 's/. *//' 's/[][]//g'
 	else
 		# OS X, BSD. Preserve leading spaces.
 		set ps_cmd 'ps axc -o comm'
 		
 		# Delete parenthesized (zombie) processes
-		set sed_cmds '/(.*)/d'		
+		set sed_cmds '/(.*)/d'	
 	end
 	
 	# Append sed command to delete first line (the header)
